@@ -7,22 +7,29 @@
 	of a popular and useful algorithm. Python's an excellent
 	language for showing simple algorithms to beginner/intermediate
 	developers.
-
 """
+
 import unittest
 
 def binary_search(alist, item):
+	"""Perform a binary search on alist, searching for item.
+	"""
+	if not isinstance(alist, list):
+		raise ValueError('Please input a list of numbers.')
+
 	# Create the upper and lower bounds of the list,
 	# ie the maximum and minimum values.
-	first = 0
-	last = len(alist) - 1
+	lower = 0
+	upper = len(alist) - 1
+
 	found = False
 
-	while first <= last and not found:
+	while lower <= upper and not found:
 		# Pick a pivot point (or midpoint) to use;
 		# we'll divide the list by two to find the initial
 		# midpoint.
-		pivot = (first + last) // 2
+		pivot = (lower + upper) // 2
+
 		if alist[pivot] == item:
 			# If the inital pivot point happens to be the item we're
 			# searching for, no more work needs to be done.
@@ -33,16 +40,16 @@ def binary_search(alist, item):
 				# searching for, the item must be on the lower half
 				# of the list.
 				# So, we adjust the maximum value to be one less than
-				# the original pivot point. First can remain the same
-				# since we're using the first (lower) half of the list.
-				last = pivot - 1
+				# the original pivot point. lower can remain the same
+				# since we're using the lower (first) half of the list.
+				upper = pivot - 1
 			else:
 				# Likewise, if the pivot point is smaller than the item we're
 				# searching for, it must be on the upper half of the list.
 				# We can keep the maximum value, and simply change the
 				# variable that defines the start of the list to be one more
 				# than the original pivot point.
-				first = pivot + 1
+				lower = pivot + 1
 	# This will keep searching, narrowing the list down into smaller
 	# and smaller halves, for every iteration of the while loop.
 	# Eventually the pivot point will be equal to the item we're
@@ -51,14 +58,20 @@ def binary_search(alist, item):
 	# 'divide and conquer' algorithm.
 	return found
 
-# Test
 
+# Test.
 class TestBinarySearch(unittest.TestCase):
 
+
+	"""Test our method succeeds and fails when it should."""
 
 	def test_search(self):
 		my_list = [a for a in range(1, 11)]
 		self.assertEqual(binary_search(my_list, 5), True)
+
+	def test_search_fails_with_bad_input(self):
+		with self.assertRaises(ValueError):
+			binary_search('hello world', 5)
 
 if __name__ == '__main__':
 	unittest.main()
